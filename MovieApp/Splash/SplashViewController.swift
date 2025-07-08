@@ -66,22 +66,26 @@ class SplashViewController: UIViewController {
     
     private func expandRingView() {
         guard !completeInitialAnimation else { return }
-        UIView.animate(withDuration: 1.5, delay: .zero, usingSpringWithDamping: 3.0, initialSpringVelocity: 0.4, animations: {
+        UIView.animate(withDuration: 1.5, delay: .zero, usingSpringWithDamping: 3.0, initialSpringVelocity: 0.4, animations: { [weak self] in
+            guard let self else { return }
             self.concentricRingView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
             self.playButtonImage.transform = CGAffineTransform.identity
             self.updateColors()
-        }, completion: { _ in
+        }, completion: { [weak self] _ in
+            guard let self else { return }
             self.contractRingView()
         })
     }
     
     private func contractRingView() {
         guard !completeInitialAnimation else { return }
-        UIView.animate(withDuration: 1.5, delay: .zero, usingSpringWithDamping: 3.0, initialSpringVelocity: 0.4, animations: {
+        UIView.animate(withDuration: 1.5, delay: .zero, usingSpringWithDamping: 3.0, initialSpringVelocity: 0.4, animations: { [weak self] in
+            guard let self else { return }
             self.concentricRingView.transform = CGAffineTransform.identity
             self.playButtonImage.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
             self.updateColors()
-        }, completion: { _ in
+        }, completion: { [weak self] _ in
+            guard let self else { return }
             self.expandRingView()
         })
     }
@@ -90,10 +94,12 @@ class SplashViewController: UIViewController {
         completeInitialAnimation = true
         playButtonImage.image = UIImage(systemName: "play.fill")
         playButtonImage.tintColor = .blue
-        UIView.animate(withDuration: 0.5, animations: {
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            guard let self else { return }
             self.concentricRingView.transform = CGAffineTransform(scaleX: 10.0, y: 10.0)
             self.playButtonImage.transform = CGAffineTransform(scaleX: .zero, y: .zero)
-        }, completion: { _ in
+        }, completion: { [weak self] _ in
+            guard let self else { return }
             self.delegate?.splashDidFinishLaunching()
         })
     }
