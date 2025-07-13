@@ -17,7 +17,7 @@ class HomeTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.layer.cornerRadius = 8
         contentView.clipsToBounds = true
-        contentView.backgroundColor = .gray // Background for the cell's content area
+        contentView.backgroundColor = .black
         titleLabel.numberOfLines = 0
         imageViewCell.contentMode = .scaleToFill
         imageViewCell.translatesAutoresizingMaskIntoConstraints = false
@@ -32,14 +32,13 @@ class HomeTableViewCell: UITableViewCell {
 
         NSLayoutConstraint.activate([
             imageViewCell.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageViewCell.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            imageViewCell.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            imageViewCell.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.7),
-
-            titleLabel.topAnchor.constraint(equalTo: imageViewCell.bottomAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 6),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -6),
-            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            imageViewCell.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            imageViewCell.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            imageViewCell.heightAnchor.constraint(equalToConstant: 220),
+            imageViewCell.widthAnchor.constraint(equalToConstant: 132),
+            titleLabel.leadingAnchor.constraint(equalTo: imageViewCell.trailingAnchor, constant: 6),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            titleLabel.centerYAnchor.constraint(greaterThanOrEqualTo: contentView.centerYAnchor)
         ])
     }
 

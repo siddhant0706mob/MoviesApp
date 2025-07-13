@@ -66,33 +66,8 @@ class HomeViewModel {
         })
     }
     
-    func getNumberOfSections() -> Int { 2 }
     
-    func getNumberOfItemsInSection(_ section: Int) -> Int {
-        trendingMoives.count
-
-//        if let tvSection =  HomeTableViewSection(rawValue: section) {
-//            switch tvSection {
-//                case .nowPlaying:
-//                return 1
-//            case .trending:
-//                return trendingMoives.count
-//            }
-//        }
-//        return .zero
-    }
-    
-    func getTitleForHeader(at section: Int) -> String {
-        switch section {
-        case 0:
-            return "Now Playing"
-        case 2:
-            return "Trending"
-        default:
-            break
-        }
-        return ""
-    }
+    func getNumberOfItemsInSection() -> Int { trendingMoives.count }
     
     func getNowPlayingMovies() -> [Movie] { nowPlayingMoview }
     

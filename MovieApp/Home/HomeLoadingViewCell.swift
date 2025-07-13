@@ -16,11 +16,6 @@ class HomeLoadingViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupAnimationView()
     }
-//    
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//        setupAnimationView()
-//    }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)

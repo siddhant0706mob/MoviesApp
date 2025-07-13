@@ -14,13 +14,30 @@ protocol HomeViewModelDelegate: AnyObject {
 
 class HomeViewController: UIViewController,
                           HomeViewModelDelegate,
-                          NowPlayingViewDataSource {
+                          NowPlayingViewDataSource,
+                          UITableViewDelegate,
+                          UITableViewDataSource,
+                          UICollectionViewDelegate,
+                          UICollectionViewDataSource,
+                          UICollectionViewDelegateFlowLayout,
+                          UIScrollViewDelegate {
     private let viewModel: HomeViewModel
     private let tableView: UITableView = {
         let tbl = UITableView()
         tbl.translatesAutoresizingMaskIntoConstraints = false
         tbl.backgroundColor = .black
         return tbl
+    }()
+    
+    private var shouldTransform = true
+    
+    private let collectionView2: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 12, left: 12, bottom: 120, right: 12)
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.backgroundColor = .black
+        return cv
     }()
     
     private let nowPlayingView = NowPlayingView()
@@ -67,6 +84,7 @@ class HomeViewController: UIViewController,
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
         createViews()
+        setupTableView()
         self.viewModel.fetchTrendingMovies()
         self.viewModel.fetchNowPlayingMovies()
     }
@@ -81,7 +99,7 @@ class HomeViewController: UIViewController,
         view.addSubview(lineView)
         view.addSubview(trendingLabel)
         view.addSubview(flameImage)
-        view.addSubview(tableView)
+        view.addSubview(collectionView2)
         nowPlayingView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             nowPlayingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -100,11 +118,20 @@ class HomeViewController: UIViewController,
             flameImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 106),
             flameImage.widthAnchor.constraint(equalToConstant: 24),
             flameImage.heightAnchor.constraint(equalToConstant: 24),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: trendingLabel.bottomAnchor, constant: 12),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            collectionView2.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView2.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView2.topAnchor.constraint(equalTo: trendingLabel.bottomAnchor, constant: 12),
+            collectionView2.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 460),
         ])
+    }
+    
+    private func setupTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: "MovieCell2")
+        collectionView2.delegate = self
+        collectionView2.dataSource = self
+        collectionView2.register(HomeViewCell.self, forCellWithReuseIdentifier: "HomeviewCell2")
     }
     
     private func toggleShimmer(_ hide: Bool) {
@@ -128,153 +155,63 @@ class HomeViewController: UIViewController,
     func getPlayingMovies() -> [Movie] {
         viewModel.getNowPlayingMovies()
     }
-}
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.getNumberOfItemsInSection()
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell2", for: indexPath) as? HomeTableViewCell else { return UITableViewCell() }
+        let data = viewModel.getTrendingMovie(at: indexPath.row)
+        let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
+        let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
+        let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
+        cell.setData(HomeViewCellModel(image: convertHTTPToHTTPS(urlString: imageURL), title: data.title))
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        viewModel.getNumberOfItemsInSection()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeviewCell2", for: indexPath) as? HomeViewCell else { return UICollectionViewCell() }
+        let data = viewModel.getTrendingMovie(at: indexPath.row)
+        let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
+        let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
+        let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
+        cell.setData(HomeViewCellModel(image: convertHTTPToHTTPS(urlString: imageURL), title: data.title))
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let cellWidth: CGFloat = 160
+        let cellHeight: CGFloat = 280
+        return CGSize(width: cellWidth, height: cellHeight)
+    }
 
-//
-//class HomeViewController: UIViewController,
-//                          HomeViewModelDelegate {
-//
-//    private let viewModel: HomeViewModel
-//    private let tableView = UITableView()
-//
-//    private let nowPlayingView = UIView()
-//
-//    private let loadingView: LottieAnimationView = {
-//        let animationView = LottieAnimationView(name: "Loadingjson")
-//        animationView.loopMode = .loop
-//        return animationView
-//    }()
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        toggleShimmer(false)
-//    }
-//
-//    init(_ viewModel: HomeViewModel) {
-//        self.viewModel = viewModel
-//        super.init(nibName: nil, bundle: nil)
-//        viewModel.delegate = self
-//        createViews()
-//        self.viewModel.fetchTrendingMovies()
-//        self.viewModel.fetchNowPlayingMovies()
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//
-//    private func createViews() {
-//        view.backgroundColor = .darkGray
-//        createCollectionView()
-//        view.addSubview(loadingView)
-//        loadingView.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-//            loadingView.widthAnchor.constraint(equalToConstant: 200),
-//            loadingView.heightAnchor.constraint(equalToConstant: 200),
-//        ])
-//    }
-//
-//    private func createCollectionView() {
-//        tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: "MovieCell2")
-//        tableView.register(NowPlayingTableViewCell.self, forCellReuseIdentifier: "nowPlayingCell")
-//
-//        tableView.delegate = self
-//        tableView.dataSource = self
-//        tableView.translatesAutoresizingMaskIntoConstraints = false
-//        view.addSubview(tableView)
-//        NSLayoutConstraint.activate([
-//            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-//            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-//            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
-//            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
-//        ])
-//    }
-//
-//    private func toggleShimmer(_ hide: Bool) {
-//        if hide {
-//            loadingView.stop()
-//            loadingView.isHidden = true
-//        } else {
-//            loadingView.play()
-//            loadingView.isHidden = false
-//        }
-//    }
-//
-//    func reloadTableView() {
-//        DispatchQueue.main.async { [weak self] in
-//            self?.toggleShimmer(true)
-//            self?.tableView.reloadData()
-//        }
-//    }
-//}
-//
-//extension HomeViewController: UITableViewDelegate,
-//                              UITableViewDataSource {
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { viewModel.getNumberOfSections() }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-////        if let tvSection =  HomeTableViewSection(rawValue: indexPath.section) {
-////            switch indexPath.section {
-//////            case .nowPlaying:
-////                guard let cell = tableView.dequeueReusableCell(withIdentifier: "nowPlayingCell", for: indexPath) as? NowPlayingTableViewCell else { return UITableViewCell() }
-////                let data = viewModel.getTrendingMovie(at: indexPath.row)
-////                let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
-////                let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
-////                let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
-//////                cell.setData(HomeViewCellModel(image: convertHTTPToHTTPS(urlString: imageURL), title: data.title))
-////                return cell
-////            case 0:
-//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell2", for: indexPath) as? HomeTableViewCell else { return UITableViewCell() }
-//                let data = viewModel.getTrendingMovie(at: indexPath.row)
-//                let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
-//                let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
-//                let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
-//                cell.setData(HomeViewCellModel(image: imageURL, title: data.title))
-//                return cell
-////            default:
-////                break
-////            }
-////        }
-////        return UITableViewCell()
-//    }
-//
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let headerView = UIView()
-//        headerView.backgroundColor = .darkGray
-//        let label = UILabel()
-//        label.translatesAutoresizingMaskIntoConstraints = false
-//        label.textColor = .white
-//        label.font = UIFont.boldSystemFont(ofSize: 20)
-//        headerView.addSubview(label)
-//
-//        NSLayoutConstraint.activate([
-//            label.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-//            label.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
-//            label.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
-//        ])
-//
-//        if section == 0 {
-//            label.text = "Trending Movies"
-//        } else if section == 1 {
-//            label.text = "Now Playing"
-//        }
-//        return headerView
-//    }
-//
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 44
-//    }
-//
-//    private func convertHTTPToHTTPS(urlString: String) -> String {
-//        guard var components = URLComponents(string: urlString) else {
-//            return urlString
-//        }
-//        if components.scheme == "http" {
-//            components.scheme = "https"
-//        }
-//        return components.url?.absoluteString ?? urlString
-//    }
-//}
+    private func convertHTTPToHTTPS(urlString: String) -> String {
+        guard var components = URLComponents(string: urlString) else {
+            return urlString
+        }
+        if components.scheme == "http" {
+            components.scheme = "https"
+        }
+        return components.url?.absoluteString ?? urlString
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let nowplayingHeight = nowPlayingView.frame.height + 14
+        if scrollView == collectionView2,
+           scrollView.contentOffset.y > 0,
+           scrollView.contentOffset.y < nowplayingHeight {
+            UIView.animate(withDuration: 0.1) { [weak self] in
+                guard let self else { return }
+                self.nowPlayingView.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
+                self.lineView.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
+                self.trendingLabel.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
+                self.flameImage.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
+                self.collectionView2.transform = CGAffineTransform(translationX: 0, y: 12 - scrollView.contentOffset.y)
+            }
+        }
+    }
+}
