@@ -90,7 +90,7 @@ class SplashViewController: UIViewController {
         })
     }
     
-    public func dismissSplash() {
+    public func dismissSplash(_ completion: @escaping () -> Void) {
         completeInitialAnimation = true
         playButtonImage.image = UIImage(systemName: "play.fill")
         playButtonImage.tintColor = .blue
@@ -98,9 +98,8 @@ class SplashViewController: UIViewController {
             guard let self else { return }
             self.concentricRingView.transform = CGAffineTransform(scaleX: 10.0, y: 10.0)
             self.playButtonImage.transform = CGAffineTransform(scaleX: .zero, y: .zero)
-        }, completion: { [weak self] _ in
-            guard let self else { return }
-            self.delegate?.splashDidFinishLaunching()
+        }, completion: { _ in
+            completion()
         })
     }
 }
