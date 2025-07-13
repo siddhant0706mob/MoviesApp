@@ -8,14 +8,19 @@
 import UIKit
 import Lottie
 
-class HomeLoadingViewCell: UICollectionViewCell {
+class HomeLoadingViewCell: UITableViewCell {
 
     private var animationView: LottieAnimationView?
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupAnimationView()
     }
+//    
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        setupAnimationView()
+//    }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -31,10 +36,11 @@ class HomeLoadingViewCell: UICollectionViewCell {
         animationView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
+            animationView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            animationView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             animationView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            animationView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            animationView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.8),
-            animationView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.8),
+            animationView.widthAnchor.constraint(equalToConstant: 200),
+            animationView.heightAnchor.constraint(equalToConstant: 100),
         ])
 
         animationView.contentMode = .scaleAspectFit

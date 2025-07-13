@@ -55,5 +55,11 @@ class HomeViewCell: UICollectionViewCell {
         imageView.setImage(item.image)
         titleLabel.text = item.title
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.image = nil
+        titleLabel.text = nil
+    }
 }
 

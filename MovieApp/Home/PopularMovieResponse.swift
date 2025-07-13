@@ -28,7 +28,7 @@ struct Movie: Decodable, Identifiable {
     let originalTitle: String
     let overview: String
     let posterPath: String?
-    let mediaType: MediaType
+    let mediaType: MediaType?
     let originalLanguage: String
     let genreIds: [Int]
     let popularity: Double
