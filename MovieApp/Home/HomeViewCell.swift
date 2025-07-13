@@ -14,17 +14,21 @@ struct HomeViewCellModel {
 
 class HomeViewCell: UICollectionViewCell {
     
-    var imageView = UIImageView()
+    var imageView = CachedImageView()
     let titleLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        imageView.contentMode = .scaleAspectFit
+        layer.cornerRadius = 8
+        clipsToBounds = true
+        backgroundColor = .gray
+        titleLabel.numberOfLines = 0
+        imageView.contentMode = .scaleToFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.systemFont(ofSize: 14)
+        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        titleLabel.textColor = .white
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         contentView.addSubview(imageView)
@@ -37,8 +41,8 @@ class HomeViewCell: UICollectionViewCell {
             imageView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.7),
             
             titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 6),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -6),
             titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
@@ -48,16 +52,7 @@ class HomeViewCell: UICollectionViewCell {
     }
     
     func setData(_ item: HomeViewCellModel) {
-        if let url = URL(string: item.image) {
-            URLSession.shared.dataTask(with: url) { data, _, error in
-                guard let data = data, error == nil,
-                      let image = UIImage(data: data) else { return }
-                
-                DispatchQueue.main.async {
-                    self.imageView.image = image
-                }
-            }.resume()
-        }
+        imageView.setImage(item.image)
         titleLabel.text = item.title
     }
 }
