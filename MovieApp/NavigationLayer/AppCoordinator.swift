@@ -21,16 +21,15 @@ class AppCoordinator {
     func start() {
         showSplash()
         //Adding delay since configuration api is too fast and splash is not visible
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            self?.fetchConfiguration()
-        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            fetchConfiguration()
+//        }
     }
     
     private func showSplash() {
         splashVC = SplashViewController()
         if let splashVC {
             rootNavigationController = UINavigationController(rootViewController: splashVC)
-            rootNavigationController?.isNavigationBarHidden = true
             window.rootViewController = rootNavigationController
         }
     }

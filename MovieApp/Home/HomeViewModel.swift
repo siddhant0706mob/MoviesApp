@@ -66,18 +66,20 @@ class HomeViewModel {
         })
     }
     
-    func getNumberOfSections() -> Int { HomeTableViewSection.allCases.count }
+    func getNumberOfSections() -> Int { 2 }
     
     func getNumberOfItemsInSection(_ section: Int) -> Int {
-        if let tvSection =  HomeTableViewSection(rawValue: section) {
-            switch tvSection {
-                case .nowPlaying:
-                return 1
-            case .trending:
-                return trendingMoives.count
-            }
-        }
-        return .zero
+        trendingMoives.count
+
+//        if let tvSection =  HomeTableViewSection(rawValue: section) {
+//            switch tvSection {
+//                case .nowPlaying:
+//                return 1
+//            case .trending:
+//                return trendingMoives.count
+//            }
+//        }
+//        return .zero
     }
     
     func getTitleForHeader(at section: Int) -> String {

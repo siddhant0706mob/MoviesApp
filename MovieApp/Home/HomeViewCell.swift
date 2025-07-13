@@ -20,8 +20,10 @@ class HomeViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.cornerRadius = 8
+        layer.borderWidth = 2.5
+        layer.borderColor = UIColor(hex: 0x98BAE3).cgColor
         clipsToBounds = true
-        backgroundColor = .gray
+        backgroundColor = UIColor(hex: 0x365475)
         titleLabel.numberOfLines = 0
         imageView.contentMode = .scaleToFill
         imageView.translatesAutoresizingMaskIntoConstraints = false

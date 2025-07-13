@@ -10,7 +10,7 @@ import UIKit
 
 class HomeTableViewCell: UITableViewCell {
 
-    var imageViewCell = CachedImageView() // Renamed to avoid conflict with UITableViewCell's imageView
+    var imageViewCell = CachedImageView() 
     let titleLabel = UILabel()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
