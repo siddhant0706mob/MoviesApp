@@ -25,16 +25,16 @@ class NowPlayingView: UIView,
     
     private let imgView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(systemName: "play")
+        view.image = UIImage(systemName: "play.fill")
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.tintColor = .blue
+        view.tintColor = .white
         return view
     }()
     
     private let headerLabel: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .white
-        lbl.text = "Top Rated"
+        lbl.text = "Trending & Playing"
         lbl.font = UIFont.systemFont(ofSize: 28, weight: .bold)
         lbl.textAlignment = .center
         return lbl
@@ -82,9 +82,9 @@ class NowPlayingView: UIView,
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
             titleLabel.heightAnchor.constraint(equalToConstant: 50),
             imgView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 14),
-            imgView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: 134),
+            imgView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: 130),
             imgView.heightAnchor.constraint(equalToConstant: 24),
-            imgView.widthAnchor.constraint(equalToConstant: 20),
+            imgView.widthAnchor.constraint(equalToConstant: 18),
             cv.leadingAnchor.constraint(equalTo: leadingAnchor, constant: .zero),
             cv.trailingAnchor.constraint(equalTo: trailingAnchor, constant: .zero),
             cv.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),

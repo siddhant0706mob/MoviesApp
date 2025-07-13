@@ -16,7 +16,12 @@ class HomeViewController: UIViewController,
                           HomeViewModelDelegate,
                           NowPlayingViewDataSource {
     private let viewModel: HomeViewModel
-    private let tableView = UITableView()
+    private let tableView: UITableView = {
+        let tbl = UITableView()
+        tbl.translatesAutoresizingMaskIntoConstraints = false
+        tbl.backgroundColor = .black
+        return tbl
+    }()
     
     private let nowPlayingView = NowPlayingView()
     
@@ -24,6 +29,30 @@ class HomeViewController: UIViewController,
         let animationView = LottieAnimationView(name: "Loadingjson")
         animationView.loopMode = .loop
         return animationView
+    }()
+    
+    private let lineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let trendingLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.textColor = .white
+        lbl.text = "Trending"
+        lbl.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    private let flameImage: UIImageView = {
+        let imageView = UIImageView(image: UIImage(systemName: "flame"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .white
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     override func viewDidLoad() {
@@ -49,11 +78,32 @@ class HomeViewController: UIViewController,
     private func createViews() {
         nowPlayingView.delegate = self
         view.addSubview(nowPlayingView)
+        view.addSubview(lineView)
+        view.addSubview(trendingLabel)
+        view.addSubview(flameImage)
+        view.addSubview(tableView)
         nowPlayingView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             nowPlayingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             nowPlayingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            nowPlayingView.topAnchor.constraint(equalTo: view.topAnchor, constant: 66)
+            nowPlayingView.topAnchor.constraint(equalTo: view.topAnchor, constant: 66),
+            lineView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            lineView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            lineView.topAnchor.constraint(equalTo: nowPlayingView.bottomAnchor, constant: 6),
+            lineView.heightAnchor.constraint(equalToConstant: 2),
+            lineView.bottomAnchor.constraint(equalTo: nowPlayingView.bottomAnchor, constant: 8),
+            trendingLabel.topAnchor.constraint(equalTo: lineView.bottomAnchor, constant: 6),
+            trendingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            trendingLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            trendingLabel.heightAnchor.constraint(equalToConstant: 36),
+            flameImage.centerYAnchor.constraint(equalTo: trendingLabel.centerYAnchor, constant: 2),
+            flameImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 106),
+            flameImage.widthAnchor.constraint(equalToConstant: 24),
+            flameImage.heightAnchor.constraint(equalToConstant: 24),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: trendingLabel.bottomAnchor, constant: 12),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
     
