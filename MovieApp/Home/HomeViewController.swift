@@ -1,10 +1,10 @@
-////
-////  ViewController.swift
-////  MovieApp
-////
-////  Created by Siddhant Ranjan on 07/07/25.
-////
 //
+//  ViewController.swift
+//  MovieApp
+//
+//  Created by Siddhant Ranjan on 07/07/25.
+//
+
 import UIKit
 import Lottie
 
@@ -166,10 +166,7 @@ class HomeViewController: UIViewController,
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell2", for: indexPath) as? HomeTableViewCell else { return UITableViewCell() }
         let data = viewModel.getTrendingMovie(at: indexPath.row)
-        let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
-        let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
-        let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
-        cell.setData(HomeViewCellModel(image: CommonUtils.convertHTTPToHTTPS(urlString: imageURL), title: data.title, movieId: data.id))
+        cell.setData(HomeViewCellModel(image: CommonUtils.getImageURLFromPath(path: data.posterPath) ?? "", title: data.title, movieId: data.id))
         cell.delegate = self
         return cell
     }
@@ -181,10 +178,7 @@ class HomeViewController: UIViewController,
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeviewCell2", for: indexPath) as? HomeViewCell else { return UICollectionViewCell() }
         let data = viewModel.getTrendingMovie(at: indexPath.row)
-        let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
-        let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
-        let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
-        cell.setData(HomeViewCellModel(image: CommonUtils.convertHTTPToHTTPS(urlString: imageURL), title: data.title, movieId: data.id))
+        cell.setData(HomeViewCellModel(image: CommonUtils.getImageURLFromPath(path: data.posterPath) ?? "", title: data.title, movieId: data.id))
         return cell
     }
     

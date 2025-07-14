@@ -23,7 +23,11 @@ struct MovieDisplayData {
         self.tagline = movie.tagline
         self.overview = movie.overview ?? ""
         self.releaseDate = movie.releaseDate ?? ""
-        self.runtime = "\(String(describing: movie.runtime)) minutes"
+        if let runtime = movie.runtime {
+            self.runtime = "\(runtime) minutes"
+        } else {
+            self.runtime = "N/A"
+        }
         self.genres = movie.genres?.map { $0.name ?? "" }.joined(separator: ", ") ?? ""
         self.productionCompanies = movie.productionCompanies?.map { $0.name ?? "" }.joined(separator: ", ") ?? ""
         self.budget = movie.budget?.description ?? ""

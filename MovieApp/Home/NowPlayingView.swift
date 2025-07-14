@@ -105,10 +105,7 @@ class NowPlayingView: UIView,
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = cv.dequeueReusableCell(withReuseIdentifier: "MovieCollectionViewCell", for: indexPath) as? HomeViewCell else { return UICollectionViewCell() }
         let data = dataSource[indexPath.row]
-        let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
-        let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
-        let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
-        cell.setData(HomeViewCellModel(image: CommonUtils.convertHTTPToHTTPS(urlString: imageURL), title: data.title, movieId: data.id))
+        cell.setData(HomeViewCellModel(image: CommonUtils.getImageURLFromPath(path: data.posterPath) ?? "", title: data.title, movieId: data.id))
         return cell
     }
     

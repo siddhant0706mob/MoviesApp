@@ -14,11 +14,11 @@ class CachedImageView: UIImageView {
     let downloadImage = ImageDownloadService.shared
     
     public func setImage(_ url: String) {
-//        if let img = imageCache.getImageFromCache(url) {
-//            DispatchQueue.main.async { [weak self] in
-//                self?.image = img
-//            }
-//        }
+        if let img = imageCache.getImageFromCache(url) {
+            DispatchQueue.main.async { [weak self] in
+                self?.image = img
+            }
+        }
         guard let url = URL(string: url) else { return }
         downloadImage.downloadImage(url, completion: { [weak self] image in
             DispatchQueue.main.async {
