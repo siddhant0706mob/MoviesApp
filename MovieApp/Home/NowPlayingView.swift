@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol NowPlayingViewDelegate: AnyObject {
+    func didSelectMovie(_ id: Int)
+}
+
 protocol NowPlayingViewDataSource: AnyObject {
     func getPlayingMovies() -> [Movie]
 }
@@ -50,9 +54,10 @@ class NowPlayingView: UIView,
         return collectionView
     }()
     
-    weak var delegate: NowPlayingViewDataSource?
+    weak var dataSource: NowPlayingViewDataSource?
+    weak var delegate: NowPlayingViewDelegate?
     
-    private var dataSource = [Movie]()
+    private var data = [Movie]()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -100,11 +105,11 @@ class NowPlayingView: UIView,
         cv.register(HomeViewCell.self, forCellWithReuseIdentifier: "MovieCollectionViewCell")
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { dataSource.count }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { data.count }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = cv.dequeueReusableCell(withReuseIdentifier: "MovieCollectionViewCell", for: indexPath) as? HomeViewCell else { return UICollectionViewCell() }
-        let data = dataSource[indexPath.row]
+        let data = data[indexPath.row]
         cell.setData(HomeViewCellModel(image: CommonUtils.getImageURLFromPath(path: data.posterPath) ?? "", title: data.title, movieId: data.id))
         return cell
     }
@@ -115,8 +120,13 @@ class NowPlayingView: UIView,
         return CGSize(width: cellWidth, height: cellHeight)
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let id = data[indexPath.row].id
+        delegate?.didSelectMovie(id)
+    }
+    
     public func reloadData() {
-        dataSource = delegate?.getPlayingMovies() ?? []
+        data = dataSource?.getPlayingMovies() ?? []
         cv.reloadData()
     }
 }

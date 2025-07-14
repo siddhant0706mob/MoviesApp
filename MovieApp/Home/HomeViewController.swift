@@ -15,6 +15,7 @@ protocol HomeViewModelDelegate: AnyObject {
 class HomeViewController: UIViewController,
                           HomeViewModelDelegate,
                           NowPlayingViewDataSource,
+                          NowPlayingViewDelegate,
                           UITableViewDelegate,
                           UITableViewDataSource,
                           UICollectionViewDelegate,
@@ -97,6 +98,7 @@ class HomeViewController: UIViewController,
     }
     
     private func createViews() {
+        nowPlayingView.dataSource = self
         nowPlayingView.delegate = self
         view.addSubview(nowPlayingView)
         view.addSubview(lineView)
@@ -209,7 +211,11 @@ class HomeViewController: UIViewController,
         openMovieDetail(for: id)
     }
     
-    func openMovieDetail(for id: Int) {
+    func didSelectMovie(_ id: Int) {
+        openMovieDetail(for: id)
+    }
+
+    internal func openMovieDetail(for id: Int) {
         coordinatorDelegate?.openMovieDetails(for: id)
     }
 }

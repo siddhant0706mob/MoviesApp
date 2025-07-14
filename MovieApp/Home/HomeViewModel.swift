@@ -44,4 +44,8 @@ class HomeViewModel {
     func getTrendingMovie(at row: Int) -> Movie { trendingMoives[row] }
     
     func getMovieID(at row: Int) -> Int { trendingMoives[row].id }
+    
+    func fetchNextTrendingMovies() {
+        
+    }
 }
