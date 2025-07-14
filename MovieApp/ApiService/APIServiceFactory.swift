@@ -7,8 +7,8 @@
 
 enum APIServiceType {
     case configuration
-//    case trendingMovies
-//    case nowPlayingMovies
+    case home
+    case movieDetail
 }
 
 protocol APIServiceProtocol: AnyObject {
@@ -20,6 +20,10 @@ class APIServiceFactory {
         switch type {
         case .configuration:
             return ConfigAPIService()
+        case .home:
+            return HomeAPIService()
+        case .movieDetail:
+            return MovieDetailsService()
         }
     }
     

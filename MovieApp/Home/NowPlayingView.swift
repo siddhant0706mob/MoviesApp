@@ -108,7 +108,7 @@ class NowPlayingView: UIView,
         let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
         let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
         let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
-        cell.setData(HomeViewCellModel(image: convertHTTPToHTTPS(urlString: imageURL), title: data.title))
+        cell.setData(HomeViewCellModel(image: CommonUtils.convertHTTPToHTTPS(urlString: imageURL), title: data.title, movieId: data.id))
         return cell
     }
     
@@ -121,15 +121,5 @@ class NowPlayingView: UIView,
     public func reloadData() {
         dataSource = delegate?.getPlayingMovies() ?? []
         cv.reloadData()
-    }
-    
-    private func convertHTTPToHTTPS(urlString: String) -> String {
-        guard var components = URLComponents(string: urlString) else {
-            return urlString
-        }
-        if components.scheme == "http" {
-            components.scheme = "https"
-        }
-        return components.url?.absoluteString ?? urlString
     }
 }

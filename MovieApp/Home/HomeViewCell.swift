@@ -10,6 +10,7 @@ import UIKit
 struct HomeViewCellModel {
     let image: String
     let title: String
+    let movieId: Int
 }
 
 class HomeViewCell: UICollectionViewCell {

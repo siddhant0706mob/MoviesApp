@@ -20,7 +20,10 @@ class HomeViewController: UIViewController,
                           UICollectionViewDelegate,
                           UICollectionViewDataSource,
                           UICollectionViewDelegateFlowLayout,
-                          UIScrollViewDelegate {
+                          UIScrollViewDelegate,
+                          HomeTableViewCellDelegate {
+    weak var coordinatorDelegate: AppCoordinatorDelegate?
+    
     private let viewModel: HomeViewModel
     private let tableView: UITableView = {
         let tbl = UITableView()
@@ -155,6 +158,7 @@ class HomeViewController: UIViewController,
     func getPlayingMovies() -> [Movie] {
         viewModel.getNowPlayingMovies()
     }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.getNumberOfItemsInSection()
     }
@@ -165,7 +169,8 @@ class HomeViewController: UIViewController,
         let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
         let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
         let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
-        cell.setData(HomeViewCellModel(image: convertHTTPToHTTPS(urlString: imageURL), title: data.title))
+        cell.setData(HomeViewCellModel(image: CommonUtils.convertHTTPToHTTPS(urlString: imageURL), title: data.title, movieId: data.id))
+        cell.delegate = self
         return cell
     }
     
@@ -179,7 +184,7 @@ class HomeViewController: UIViewController,
         let baseImagePath = ConfigurationStore.config?.images.baseURL ?? ""
         let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "")
         let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
-        cell.setData(HomeViewCellModel(image: convertHTTPToHTTPS(urlString: imageURL), title: data.title))
+        cell.setData(HomeViewCellModel(image: CommonUtils.convertHTTPToHTTPS(urlString: imageURL), title: data.title, movieId: data.id))
         return cell
     }
     
@@ -187,16 +192,6 @@ class HomeViewController: UIViewController,
         let cellWidth: CGFloat = 160
         let cellHeight: CGFloat = 280
         return CGSize(width: cellWidth, height: cellHeight)
-    }
-
-    private func convertHTTPToHTTPS(urlString: String) -> String {
-        guard var components = URLComponents(string: urlString) else {
-            return urlString
-        }
-        if components.scheme == "http" {
-            components.scheme = "https"
-        }
-        return components.url?.absoluteString ?? urlString
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -213,5 +208,14 @@ class HomeViewController: UIViewController,
                 self.collectionView2.transform = CGAffineTransform(translationX: 0, y: 12 - scrollView.contentOffset.y)
             }
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let id = viewModel.getMovieID(at: indexPath.row)
+        openMovieDetail(for: id)
+    }
+    
+    func openMovieDetail(for id: Int) {
+        coordinatorDelegate?.openMovieDetails(for: id)
     }
 }

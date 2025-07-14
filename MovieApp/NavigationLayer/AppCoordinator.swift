@@ -7,7 +7,11 @@
 
 import UIKit
 
-class AppCoordinator {
+protocol AppCoordinatorDelegate: AnyObject {
+    func openMovieDetails(for movieId: Int)
+}
+
+class AppCoordinator: AppCoordinatorDelegate {
     private let window: UIWindow
     private let configApiService: APIServiceProtocol
     private var rootNavigationController: UINavigationController?
@@ -49,10 +53,16 @@ class AppCoordinator {
     private func startHomeFeedFlow() {
         let homeViewModel = HomeViewModel()
         let homeViewController = HomeViewController(homeViewModel)
+        homeViewController.coordinatorDelegate = self
         splashVC?.dismissSplash { [weak self] in
             guard let self else { return }
             self.rootNavigationController?.popViewController(animated: false)
             self.rootNavigationController?.pushViewController(homeViewController, animated: true)
         }
+    }
+    
+    func openMovieDetails(for movieId: Int) {
+        let vc = MovieDetailsViewController(movieId: movieId)
+        rootNavigationController?.present(vc, animated: true)
     }
 }

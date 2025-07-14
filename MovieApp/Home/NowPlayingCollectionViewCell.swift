@@ -61,7 +61,7 @@ class NowPlayingTableViewCell: UITableViewCell, UICollectionViewDataSource, UICo
         let baseImagePath = ConfigurationStore.config?.images.baseURL ?? "https://image.tmdb.org/t/p/"
         let imageSize = (ConfigurationStore.config?.images.posterSizes.first ?? "w500")
         let imageURL = baseImagePath + imageSize + (data.posterPath ?? "")
-        cell.setData(HomeViewCellModel(image: convertHTTPToHTTPS(urlString: imageURL), title: data.title))
+        cell.setData(HomeViewCellModel(image: CommonUtils.convertHTTPToHTTPS(urlString: imageURL), title: data.title, movieId: data.id))
         return cell
     }
 
@@ -77,15 +77,5 @@ class NowPlayingTableViewCell: UITableViewCell, UICollectionViewDataSource, UICo
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 8 // Spacing between items in the horizontal collection view
-    }
-
-    private func convertHTTPToHTTPS(urlString: String) -> String {
-        guard var components = URLComponents(string: urlString) else {
-            return urlString
-        }
-        if components.scheme == "http" {
-            components.scheme = "https"
-        }
-        return components.url?.absoluteString ?? urlString
     }
 }

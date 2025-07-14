@@ -7,11 +7,17 @@
 
 import UIKit
 
+protocol HomeTableViewCellDelegate: AnyObject {
+    func openMovieDetail(for id: Int)
+}
 
 class HomeTableViewCell: UITableViewCell {
 
-    var imageViewCell = CachedImageView() 
+    var id: Int?
+    var imageViewCell = CachedImageView()
     let titleLabel = UILabel()
+    
+    weak var delegate: HomeTableViewCellDelegate?
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -40,6 +46,7 @@ class HomeTableViewCell: UITableViewCell {
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             titleLabel.centerYAnchor.constraint(greaterThanOrEqualTo: contentView.centerYAnchor)
         ])
+        contentView.gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didClickCell))]
     }
 
     required init?(coder: NSCoder) {
@@ -49,11 +56,16 @@ class HomeTableViewCell: UITableViewCell {
     func setData(_ item: HomeViewCellModel) {
         imageViewCell.setImage(item.image)
         titleLabel.text = item.title
+        id = item.movieId
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         imageViewCell.image = nil
         titleLabel.text = nil
+    }
+    
+    @objc private func didClickCell() {
+        delegate?.openMovieDetail(for: id ?? .zero)
     }
 }
