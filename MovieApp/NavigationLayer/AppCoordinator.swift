@@ -63,6 +63,6 @@ class AppCoordinator: AppCoordinatorDelegate {
     
     func openMovieDetails(for movieId: Int) {
         let vc = MovieDetailsViewController(movieId: movieId)
-        rootNavigationController?.present(vc, animated: true)
+        rootNavigationController?.pushViewController(vc, animated: true)
     }
 }

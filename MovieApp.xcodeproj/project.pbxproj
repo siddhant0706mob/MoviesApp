@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5D4A8BAB2E23C8F4001F93DA /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 5D4A8BAA2E23C8F4001F93DA /* Lottie */; };
+		5D4A8CC02E26152F001F93DA /* BookmarkEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4A8CBE2E26152F001F93DA /* BookmarkEntity+CoreDataClass.swift */; };
+		5D4A8CC12E26152F001F93DA /* BookmarkEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4A8CBF2E26152F001F93DA /* BookmarkEntity+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +33,8 @@
 		5D0709DC2E1C18FF00DF7481 /* MovieApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D0709F52E1C190000DF7481 /* MovieAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D0709FF2E1C190000DF7481 /* MovieAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D4A8CBE2E26152F001F93DA /* BookmarkEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookmarkEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5D4A8CBF2E26152F001F93DA /* BookmarkEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookmarkEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -93,6 +97,8 @@
 		5D0709D32E1C18FF00DF7481 = {
 			isa = PBXGroup;
 			children = (
+				5D4A8CBE2E26152F001F93DA /* BookmarkEntity+CoreDataClass.swift */,
+				5D4A8CBF2E26152F001F93DA /* BookmarkEntity+CoreDataProperties.swift */,
 				5D0709DE2E1C18FF00DF7481 /* MovieApp */,
 				5D0709F82E1C190000DF7481 /* MovieAppTests */,
 				5D070A022E1C190000DF7481 /* MovieAppUITests */,
@@ -259,6 +265,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D4A8CC02E26152F001F93DA /* BookmarkEntity+CoreDataClass.swift in Sources */,
+				5D4A8CC12E26152F001F93DA /* BookmarkEntity+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

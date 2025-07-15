@@ -191,7 +191,7 @@ class HomeViewController: UIViewController,
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let nowplayingHeight = nowPlayingView.frame.height + 14
+        let nowplayingHeight = nowPlayingView.frame.height + 110
         if scrollView == collectionView2,
            scrollView.contentOffset.y > 0,
            scrollView.contentOffset.y < nowplayingHeight {

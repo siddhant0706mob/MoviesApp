@@ -1,10 +1,3 @@
-//
-//  MovieDetailsController.swift
-//  MovieApp
-//
-//  Created by Siddhant Ranjan on 14/07/25.
-//
-
 import UIKit
 
 protocol MovieDetailsViewModelDelegate: AnyObject {
@@ -16,11 +9,16 @@ class MovieDetailsViewController: UIViewController, MovieDetailsViewModelDelegat
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
     private let posterImageView = CachedImageView()
+    private let bookMarkDataService: BookmarkDataServiceProtocol
+    private let movieId: Int
+    private var isMovieBookMarked: Bool { bookMarkDataService.isBookmarked(movieId) }
     
     private let viewModel: MovieDetailsViewModel
     
-    init(movieId: Int) {
+    init(movieId: Int, _ bookmarkDataService: BookmarkDataServiceProtocol = BookmarkDataService()) {
         self.viewModel = MovieDetailsViewModel(movieId: movieId)
+        self.bookMarkDataService = bookmarkDataService
+        self.movieId = movieId
         super.init(nibName: nil, bundle: nil)
         self.viewModel.delegate = self
     }
@@ -33,6 +31,7 @@ class MovieDetailsViewController: UIViewController, MovieDetailsViewModelDelegat
         super.viewDidLoad()
         setupUI()
         setupConstraints()
+        setupBookmarkButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,7 +63,7 @@ class MovieDetailsViewController: UIViewController, MovieDetailsViewModelDelegat
         posterImageView.layer.cornerRadius = 12
         posterImageView.translatesAutoresizingMaskIntoConstraints = false
     }
-    
+
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -76,11 +75,28 @@ class MovieDetailsViewController: UIViewController, MovieDetailsViewModelDelegat
             stackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            
             stackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -24)
         ])
     }
+
+    private func updateBookMarkButton(_ isAdded: Bool) {
+        let btn = navigationItem.rightBarButtonItem
+        btn?.image = isAdded ? UIImage(systemName: "bookmark.fill") : UIImage(systemName: "bookmark")
+    }
     
+    private func setupBookmarkButton() {
+        let bookmarkImage = UIImage(systemName: "bookmark")
+        let bookmarkButton = UIBarButtonItem(image: bookmarkImage, style: .plain, target: self, action: #selector(bookmarkTapped))
+        bookmarkButton.tintColor = .systemBlue
+        navigationItem.rightBarButtonItem = bookmarkButton
+        updateBookMarkButton(isMovieBookMarked)
+    }
+
+    @objc private func bookmarkTapped() {
+        isMovieBookMarked ? bookMarkDataService.deleteBookmark(movieId) : bookMarkDataService.addBookmark(movieId)
+        updateBookMarkButton(isMovieBookMarked)
+    }
+
     private func createLabel(_ text: String, font: UIFont, color: UIColor = .label, alignment: NSTextAlignment = .left, lines: Int = 0) -> UILabel {
         let label = UILabel()
         label.text = text
