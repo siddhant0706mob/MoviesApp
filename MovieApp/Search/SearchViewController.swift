@@ -10,6 +10,8 @@ class SearchViewController: UIViewController,
     private let searchBar = UISearchBar()
     private var lastSearchedString = ""
     
+    weak var appCoordinatorDelegate: AppCoordinatorDelegate?
+    
     private let emptyLabel: UILabel = {
         let label = UILabel()
         label.text = "Oops! there are no results matching your search"
@@ -143,5 +145,10 @@ class SearchViewController: UIViewController,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.bounds.width - 12) / 2
         return CGSize(width: width, height: 240)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let id = viewModel.getResult(at: indexPath.row).id
+        appCoordinatorDelegate?.openMovieDetails(for: id)
     }
 }

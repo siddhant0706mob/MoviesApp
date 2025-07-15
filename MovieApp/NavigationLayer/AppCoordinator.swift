@@ -100,6 +100,7 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
         
         let searchViewModel = SearchViewModel()
         searchViewController = SearchViewController(searchViewModel)
+        searchViewController?.appCoordinatorDelegate = self
         
         setupTabBarController(homeViewController, savedMoviesController)
     }
