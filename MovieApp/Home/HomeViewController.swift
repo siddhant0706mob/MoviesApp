@@ -9,29 +9,20 @@ import UIKit
 import Lottie
 
 protocol HomeViewModelDelegate: AnyObject {
-    func reloadTableView()
+    func reloadCollectionView()
 }
 
 class HomeViewController: UIViewController,
                           HomeViewModelDelegate,
                           NowPlayingViewDataSource,
                           NowPlayingViewDelegate,
-                          UITableViewDelegate,
-                          UITableViewDataSource,
                           UICollectionViewDelegate,
                           UICollectionViewDataSource,
                           UICollectionViewDelegateFlowLayout,
-                          UIScrollViewDelegate,
-                          HomeTableViewCellDelegate {
+                          UIScrollViewDelegate {
     weak var coordinatorDelegate: AppCoordinatorDelegate?
     
-    private let viewModel: HomeViewModel
-    private let tableView: UITableView = {
-        let tbl = UITableView()
-        tbl.translatesAutoresizingMaskIntoConstraints = false
-        tbl.backgroundColor = .white
-        return tbl
-    }()
+    private let viewModel: HomeViewModelProtocol
     
     private var shouldTransform = true
     
@@ -83,14 +74,14 @@ class HomeViewController: UIViewController,
         view.backgroundColor = .white
     }
     
-    init(_ viewModel: HomeViewModel) {
+    init(_ viewModel: HomeViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        viewModel.delegate = self
+        viewModel.setDelegate(self)
         createViews()
-        setupTableView()
-        self.viewModel.fetchTrendingMovies()
-        self.viewModel.fetchNowPlayingMovies()
+        setupCollectionView()
+        viewModel.fetchTrendingMovies()
+        viewModel.fetchNowPlayingMovies()
     }
     
     required init?(coder: NSCoder) {
@@ -130,10 +121,7 @@ class HomeViewController: UIViewController,
         ])
     }
     
-    private func setupTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: "MovieCell2")
+    private func setupCollectionView() {
         collectionView2.delegate = self
         collectionView2.dataSource = self
         collectionView2.register(HomeViewCell.self, forCellWithReuseIdentifier: "HomeviewCell2")
@@ -149,10 +137,9 @@ class HomeViewController: UIViewController,
         }
     }
     
-    func reloadTableView() {
+    func reloadCollectionView() {
         DispatchQueue.main.async { [weak self] in
             self?.toggleShimmer(true)
-            self?.tableView.reloadData()
             self?.nowPlayingView.reloadData()
         }
     }
@@ -160,19 +147,7 @@ class HomeViewController: UIViewController,
     func getPlayingMovies() -> [Movie] {
         viewModel.getNowPlayingMovies()
     }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.getNumberOfItemsInSection()
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell2", for: indexPath) as? HomeTableViewCell else { return UITableViewCell() }
-        let data = viewModel.getTrendingMovie(at: indexPath.row)
-        cell.setData(HomeViewCellModel(image: CommonUtils.getImageURLFromPath(path: data.posterPath) ?? "", title: data.title, movieId: data.id))
-        cell.delegate = self
-        return cell
-    }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.getNumberOfItemsInSection()
     }

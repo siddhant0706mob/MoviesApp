@@ -10,7 +10,17 @@ enum HomeTableViewSection: Int, CaseIterable {
     case trending
 }
 
-class HomeViewModel {
+protocol HomeViewModelProtocol {
+    func fetchTrendingMovies()
+    func fetchNowPlayingMovies()
+    func getNumberOfItemsInSection() -> Int
+    func getNowPlayingMovies() -> [Movie]
+    func getTrendingMovie(at row: Int) -> Movie 
+    func getMovieID(at row: Int) -> Int
+    func setDelegate(_ delegate: HomeViewModelDelegate)
+}
+
+class HomeViewModel: HomeViewModelProtocol {
     private let homeAPIService: APIServiceProtocol
     
     weak var delegate: HomeViewModelDelegate?
@@ -22,10 +32,12 @@ class HomeViewModel {
         self.homeAPIService = APIServiceFactory.getApiService(for: .home)
     }
     
+    func setDelegate(_ delegate: any HomeViewModelDelegate) { self.delegate = delegate }
+    
     func fetchTrendingMovies() {
         (homeAPIService as? HomeAPIServiceProtocol)?.fetchTrendingMovies({ [weak self] value in
             self?.trendingMoives = value.results
-            self?.delegate?.reloadTableView()
+            self?.delegate?.reloadCollectionView()
         })
     }
     
@@ -33,7 +45,7 @@ class HomeViewModel {
         (homeAPIService as? HomeAPIServiceProtocol)?.fetchNowPlayingMovies({ [weak self] value in
             self?.trendingMoives = value.results
             self?.nowPlayingMoview = value.results
-            self?.delegate?.reloadTableView()
+            self?.delegate?.reloadCollectionView()
         })
     }
     
@@ -44,8 +56,4 @@ class HomeViewModel {
     func getTrendingMovie(at row: Int) -> Movie { trendingMoives[row] }
     
     func getMovieID(at row: Int) -> Int { trendingMoives[row].id }
-    
-    func fetchNextTrendingMovies() {
-        
-    }
 }
