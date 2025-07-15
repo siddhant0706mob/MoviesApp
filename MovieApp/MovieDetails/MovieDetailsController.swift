@@ -12,14 +12,14 @@ class MovieDetailsViewController: UIViewController, MovieDetailsViewModelDelegat
     private let bookMarkDataService: BookmarkDataServiceProtocol
     private let movieId: Int
     
-    private let viewModel: MovieDetailsViewModel
+    private let viewModel: MovieDetailsViewModelProtocol
     
-    init(movieId: Int, _ bookmarkDataService: BookmarkDataServiceProtocol = BookmarkDataService()) {
-        self.viewModel = MovieDetailsViewModel(movieId: movieId)
+    init(_ viewModel: MovieDetailsViewModelProtocol, movieId: Int, _ bookmarkDataService: BookmarkDataServiceProtocol = BookmarkDataService()) {
+        self.viewModel = viewModel
         self.bookMarkDataService = bookmarkDataService
         self.movieId = movieId
         super.init(nibName: nil, bundle: nil)
-        self.viewModel.delegate = self
+        self.viewModel.setDelegate(self)
     }
     
     required init?(coder: NSCoder) {

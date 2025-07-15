@@ -130,7 +130,8 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
     }
     
     func openMovieDetails(for movieId: Int) {
-        let vc = MovieDetailsViewController(movieId: movieId)
+        let viewModel = MovieDetailsViewModel(movieId: movieId)
+        let vc = MovieDetailsViewController(viewModel, movieId: movieId)
         if let selectedNavController = tabController.selectedViewController as? UINavigationController {
             selectedNavController.pushViewController(vc, animated: true)
             vc.hidesBottomBarWhenPushed = true

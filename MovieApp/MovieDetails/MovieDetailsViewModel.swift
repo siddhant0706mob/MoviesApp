@@ -7,8 +7,12 @@
 
 import UIKit
 
-class MovieDetailsViewModel {
-    
+protocol MovieDetailsViewModelProtocol {
+    func setDelegate(_ delegate: MovieDetailsViewModelDelegate?)
+    func fetchMovieDetails()
+}
+
+class MovieDetailsViewModel: MovieDetailsViewModelProtocol {
     private let movieDetailService: APIServiceProtocol
  
     weak var delegate: MovieDetailsViewModelDelegate?
@@ -28,5 +32,8 @@ class MovieDetailsViewModel {
                 }
             }
         })
+    }
+    func setDelegate(_ delegate: (any MovieDetailsViewModelDelegate)?) {
+        self.delegate = delegate
     }
 }
