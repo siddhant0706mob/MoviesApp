@@ -105,9 +105,11 @@ class SavedMoviesController: UIViewController,
         
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeviewCell", for: indexPath) as? HomeViewCell else { return UICollectionViewCell() }
-        let data = viewModel.getTrendingMovie(at: indexPath.row)
-        cell.setData(HomeViewCellModel(image: CommonUtils.getImageURLFromPath(path: data.posterPath) ?? "", title: data.originalTitle ?? "", movieId: data.id ?? 0))
-        return cell
+        if let data = viewModel.getTrendingMovie(at: indexPath.row) {
+            cell.setData(HomeViewCellModel(image: CommonUtils.getImageURLFromPath(path: data.posterPath) ?? "", title: data.originalTitle ?? "", movieId: data.id ?? 0))
+            return cell
+        }
+        return UICollectionViewCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -123,7 +125,7 @@ class SavedMoviesController: UIViewController,
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let id = viewModel.getTrendingMovie(at: indexPath.row).id {
+        if let id = viewModel.getTrendingMovie(at: indexPath.row)?.id {
             coordinatorDelegate?.openMovieDetails(for: id)
         }
     }

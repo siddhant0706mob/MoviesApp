@@ -15,7 +15,7 @@ protocol HomeViewModelProtocol {
     func fetchNowPlayingMovies()
     func getNumberOfItemsInSection() -> Int
     func getNowPlayingMovies() -> [Movie]
-    func getTrendingMovie(at row: Int) -> Movie 
+    func getTrendingMovie(at row: Int) -> Movie?
     func getMovieID(at row: Int) -> Int
     func setDelegate(_ delegate: HomeViewModelDelegate)
 }
@@ -53,7 +53,17 @@ class HomeViewModel: HomeViewModelProtocol {
     
     func getNowPlayingMovies() -> [Movie] { nowPlayingMoview }
     
-    func getTrendingMovie(at row: Int) -> Movie { trendingMoives[row] }
+    func getTrendingMovie(at row: Int) -> Movie? {
+        if row < trendingMoives.count {
+            return trendingMoives[row]
+        }
+        return nil
+    }
     
-    func getMovieID(at row: Int) -> Int { trendingMoives[row].id }
+    func getMovieID(at row: Int) -> Int {
+        if row < trendingMoives.count{
+            return trendingMoives[row].id
+        }
+        return 0
+    }
 }

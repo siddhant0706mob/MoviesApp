@@ -1,0 +1,26 @@
+Movies App - Technical Overview
+3. Implemented Features & Key Design Choices
+Here's what's built into the app:
+
+Tab Bar Animation: The bottom tab bar hides when scrolling down on lists and reappears when scrolling up.
+
+Faster Search: Search results load efficiently by waiting for you to finish typing before sending a request.
+
+Offline Data & Quick Loading: Movie information is saved directly on your device.
+
+Saved Movies: You can bookmark your favorite movies, and they will stay saved in the app.
+
+Structured Code (MVVM): The app uses a clear, organized way to build its features (MVVM).
+
+Clear Navigation: How you move through the app is managed separately from the screens themselves.
+
+Auth Interceptor: An authentication interceptor has been added.
+
+4. Areas for Future Development
+These features were planned but not completed due to time limits:
+
+Loading Long Lists: The app doesn't yet load very long lists of movies in smaller sections.
+
+Direct Movie Links: You can't currently share a direct link that opens straight to a specific movie's details page in the app.
+
+Cache Refresh: Saved movie data on your device doesn't automatically refresh after a set time.

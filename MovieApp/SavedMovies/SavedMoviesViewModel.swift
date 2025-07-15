@@ -13,7 +13,7 @@ protocol SavedMoviesViewModelProtocol {
     func setDelegate(_ delegate: SavedMoviesViewModelDelegate)
     func getBookMarkedMovies()
     func getNumberOfItems() -> Int
-    func getTrendingMovie(at index: Int) -> MovieDetailResponse
+    func getTrendingMovie(at index: Int) -> MovieDetailResponse?
 }
 
 class SavedMoviesViewModel: SavedMoviesViewModelProtocol {
@@ -64,7 +64,10 @@ class SavedMoviesViewModel: SavedMoviesViewModelProtocol {
     
     func getNumberOfItems() -> Int { bookMarkedMovies.count }
     
-    func getTrendingMovie(at index: Int) -> MovieDetailResponse {
-        bookMarkedMovies[index]
+    func getTrendingMovie(at index: Int) -> MovieDetailResponse? {
+        if index < bookMarkedMovies.count {
+            return bookMarkedMovies[index]
+        }
+        return nil
     }
 }
