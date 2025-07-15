@@ -22,11 +22,23 @@ class NetworkService: NetworkServiceProtocol {
 
     private func buildRequest(from endpoint: Endpoint) throws -> URLRequest {
         guard let baseURL = endpoint.baseURL,
-              let url = URL(string: baseURL.absoluteString + endpoint.path) else {
+              let url = URL(string: baseURL.absoluteString + endpoint.path),
+              var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
             throw APIError.invalidURL
         }
 
-        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: endpoint.timeout)
+        var queryItems = [URLQueryItem]()
+        endpoint.parameters?.forEach { key, value in
+            if let value = value as? String {
+                queryItems.append(URLQueryItem(name: key, value: value))
+            }
+        }
+        
+        components.queryItems = queryItems
+        
+        var queryiedURL = components.url ?? url
+        
+        var request = URLRequest(url: queryiedURL, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: endpoint.timeout)
         request.httpMethod = endpoint.method.rawValue
 
         endpoint.headers?.forEach { key, value in

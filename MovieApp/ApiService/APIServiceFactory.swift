@@ -9,6 +9,7 @@ enum APIServiceType {
     case configuration
     case home
     case movieDetail
+    case search
 }
 
 protocol APIServiceProtocol: AnyObject {
@@ -24,6 +25,8 @@ class APIServiceFactory {
             return HomeAPIService()
         case .movieDetail:
             return MovieDetailsService()
+        case .search:
+            return SearchAPIService()
         }
     }
     

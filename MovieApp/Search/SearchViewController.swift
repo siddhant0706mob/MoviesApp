@@ -3,8 +3,9 @@ import UIKit
 class SearchViewController: UIViewController,
                             UICollectionViewDataSource,
                             UICollectionViewDelegateFlowLayout,
-                            UISearchBarDelegate {
-    
+                            UISearchBarDelegate,
+                            SearchViewModelDelegate {
+    private let viewModel: SearchViewModel
     private let titleLabel = UILabel()
     private let searchBar = UISearchBar()
     
@@ -20,18 +21,25 @@ class SearchViewController: UIViewController,
         return collectionView
     }()
     
-    private var movies: [String] = []
+    private var movies = [Movie]()
     private var searchTimer: Timer?
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    init(_ viewModel: SearchViewModel = SearchViewModel()) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel.delegate = self
         setupUI()
         setupCollectionView()
         configureTabBarItem()
     }
     
+    required init?(coder: NSCoder) {
+        self.viewModel = SearchViewModel()
+        super.init(coder: coder)
+    }
+    
     private func configureTabBarItem() {
-        tabBarItem = UITabBarItem(title: "Search",
+        tabBarItem = UITabBarItem(title: "Search your Favourite Movies",
                                   image: UIImage(systemName: "magnifyingglass"),
                                   selectedImage: UIImage(systemName: "magnifyingglass.fill"))
     }
@@ -56,7 +64,7 @@ class SearchViewController: UIViewController,
     private func setupCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(HomeViewCell.self, forCellWithReuseIdentifier: "MovieCell")
         view.addSubview(collectionView)
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 12),
@@ -75,47 +83,29 @@ class SearchViewController: UIViewController,
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchTimer?.invalidate()
-        searchTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: { [weak self] _ in
+        searchTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false, block: { [weak self] _ in
             self?.performSearch(query: searchText)
         })
     }
     
     private func performSearch(query: String) {
-        if query.isEmpty {
-            movies = []
-        } else {
-            movies = (0..<10).map { "\(query) Movie \($0)" }
-        }
-        collectionView.reloadData()
+        viewModel.fetchSearchResultsFor(query)
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return movies.count
+    func didFetchSearchResults(_ searchResults: [Movie]) {
+        movies = searchResults
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView.reloadData()
+        }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { viewModel.getNumberOfResults() }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        if cell.contentView.subviews.isEmpty {
-            let label = UILabel()
-            label.tag = 100
-            label.numberOfLines = 2
-            label.font = .systemFont(ofSize: 14, weight: .medium)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            cell.contentView.addSubview(label)
-            NSLayoutConstraint.activate([
-                label.topAnchor.constraint(equalTo: cell.contentView.topAnchor, constant: 8),
-                label.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: 8),
-                label.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -8),
-                label.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor, constant: -8)
-            ])
-            cell.contentView.backgroundColor = .secondarySystemBackground
-            cell.contentView.layer.cornerRadius = 8
-            cell.contentView.clipsToBounds = true
-        }
-        if let label = cell.contentView.viewWithTag(100) as? UILabel {
-            label.text = movies[indexPath.item]
-        }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCell", for: indexPath) as? HomeViewCell else { return UICollectionViewCell() }
+        let data = viewModel.getResult(at: indexPath.row)
+        cell.setData(HomeViewCellModel(image: CommonUtils.getImageURLFromPath(path: data.posterPath) ?? "", title: data.title, movieId: data.id))
         return cell
     }
     
@@ -123,6 +113,6 @@ class SearchViewController: UIViewController,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.bounds.width - 12) / 2
-        return CGSize(width: width, height: 80)
+        return CGSize(width: width, height: 240)
     }
 }
