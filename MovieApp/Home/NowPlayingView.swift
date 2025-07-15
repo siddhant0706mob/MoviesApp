@@ -21,7 +21,7 @@ class NowPlayingView: UIView,
                       UICollectionViewDelegateFlowLayout {
     private let titleLabel: UILabel = {
         let lbl = UILabel()
-        lbl.textColor = .white
+        lbl.textColor = .black
         lbl.text = "Now Playing"
         lbl.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
         return lbl
@@ -31,13 +31,13 @@ class NowPlayingView: UIView,
         let view = UIImageView()
         view.image = UIImage(systemName: "play.fill")
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.tintColor = .white
+        view.tintColor = .black
         return view
     }()
     
     private let headerLabel: UILabel = {
         let lbl = UILabel()
-        lbl.textColor = .white
+        lbl.textColor = .black
         lbl.text = "Trending & Playing"
         lbl.font = UIFont.systemFont(ofSize: 28, weight: .bold)
         lbl.textAlignment = .center
@@ -50,7 +50,7 @@ class NowPlayingView: UIView,
         layout.sectionInset = UIEdgeInsets(top: .zero, left: 12, bottom: 12, right: 12)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = .black
+        collectionView.backgroundColor = .white
         return collectionView
     }()
     
@@ -69,7 +69,7 @@ class NowPlayingView: UIView,
     }
     
     private func createViews() {
-        backgroundColor = .black
+        backgroundColor = .white
         addSubview(titleLabel)
         addSubview(headerLabel)
         addSubview(cv)

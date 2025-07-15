@@ -29,7 +29,7 @@ class HomeViewController: UIViewController,
     private let tableView: UITableView = {
         let tbl = UITableView()
         tbl.translatesAutoresizingMaskIntoConstraints = false
-        tbl.backgroundColor = .black
+        tbl.backgroundColor = .white
         return tbl
     }()
     
@@ -40,7 +40,7 @@ class HomeViewController: UIViewController,
         layout.sectionInset = UIEdgeInsets(top: 12, left: 12, bottom: 120, right: 12)
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.backgroundColor = .black
+        cv.backgroundColor = .white
         return cv
     }()
     
@@ -54,14 +54,14 @@ class HomeViewController: UIViewController,
     
     private let lineView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .black
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
     private let trendingLabel: UILabel = {
         let lbl = UILabel()
-        lbl.textColor = .white
+        lbl.textColor = .black
         lbl.text = "Trending"
         lbl.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -71,7 +71,7 @@ class HomeViewController: UIViewController,
     private let flameImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "flame"))
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .white
+        imageView.tintColor = .black
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -80,7 +80,7 @@ class HomeViewController: UIViewController,
         super.viewDidLoad()
         toggleShimmer(false)
         navigationItem.hidesBackButton = true
-        view.backgroundColor = .black
+        view.backgroundColor = .white
     }
     
     init(_ viewModel: HomeViewModel) {
@@ -125,7 +125,7 @@ class HomeViewController: UIViewController,
             flameImage.heightAnchor.constraint(equalToConstant: 24),
             collectionView2.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView2.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView2.topAnchor.constraint(equalTo: trendingLabel.bottomAnchor, constant: 12),
+            collectionView2.topAnchor.constraint(equalTo: trendingLabel.bottomAnchor, constant: .zero),
             collectionView2.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 460),
         ])
     }
@@ -191,17 +191,61 @@ class HomeViewController: UIViewController,
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let nowplayingHeight = nowPlayingView.frame.height + 110
         if scrollView == collectionView2,
-           scrollView.contentOffset.y > 0,
-           scrollView.contentOffset.y < nowplayingHeight {
+           scrollView.contentOffset.y > 0 {
             UIView.animate(withDuration: 0.1) { [weak self] in
                 guard let self else { return }
-                self.nowPlayingView.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
-                self.lineView.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
-                self.trendingLabel.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
-                self.flameImage.transform = CGAffineTransform(translationX: 0, y: -scrollView.contentOffset.y)
-                self.collectionView2.transform = CGAffineTransform(translationX: 0, y: 12 - scrollView.contentOffset.y)
+                self.nowPlayingView.transform = CGAffineTransform(translationX: 0, y: -min(scrollView.contentOffset.y, 370))
+                self.lineView.transform = CGAffineTransform(translationX: 0, y: -min(scrollView.contentOffset.y, 370))
+                self.trendingLabel.transform = CGAffineTransform(translationX: 0, y: -min(scrollView.contentOffset.y, 370))
+                self.flameImage.transform = CGAffineTransform(translationX: 0, y: -min(scrollView.contentOffset.y, 370))
+                self.collectionView2.transform = CGAffineTransform(translationX: 0, y: 12 - min(scrollView.contentOffset.y, 370))
+            }
+        } else if scrollView == collectionView2 {
+            UIView.animate(withDuration: 0.1) { [weak self] in
+                guard let self else { return }
+                self.nowPlayingView.transform = .identity
+                self.lineView.transform = .identity
+                self.trendingLabel.transform = .identity
+                self.flameImage.transform = .identity
+                self.collectionView2.transform = .identity
+            }
+        }
+        
+        if scrollView.contentOffset.y >= 370 {
+            UIView.animate(withDuration: 0.1) { [weak self] in
+                self?.nowPlayingView.alpha = .zero
+                self?.flameImage.alpha = .zero
+                self?.lineView.alpha = .zero
+                self?.trendingLabel.textAlignment = .center
+            }
+        } else {
+            self.nowPlayingView.alpha = 1
+            self.lineView.alpha = 1
+            self.flameImage.alpha = 1
+            self.trendingLabel.textAlignment = .left
+        }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if scrollView == collectionView2,
+           scrollView.contentOffset.y > 0 {
+            UIView.animate(withDuration: 0.1) { [weak self] in
+                guard let self else { return }
+                self.nowPlayingView.transform = CGAffineTransform(translationX: 0, y: -min(scrollView.contentOffset.y, 370))
+                self.lineView.transform = CGAffineTransform(translationX: 0, y: -min(scrollView.contentOffset.y, 370))
+                self.trendingLabel.transform = CGAffineTransform(translationX: 0, y: -min(scrollView.contentOffset.y, 370))
+                self.flameImage.transform = CGAffineTransform(translationX: 0, y: -min(scrollView.contentOffset.y, 370))
+                self.collectionView2.transform = CGAffineTransform(translationX: 0, y: 12 - min(scrollView.contentOffset.y, 370))
+            }
+        }  else if scrollView == collectionView2 {
+            UIView.animate(withDuration: 0.1) { [weak self] in
+                guard let self else { return }
+                self.nowPlayingView.transform = .identity
+                self.lineView.transform = .identity
+                self.trendingLabel.transform = .identity
+                self.flameImage.transform = .identity
+                self.collectionView2.transform = .identity
             }
         }
     }
@@ -214,7 +258,7 @@ class HomeViewController: UIViewController,
     func didSelectMovie(_ id: Int) {
         openMovieDetail(for: id)
     }
-
+    
     func openMovieDetail(for id: Int) {
         coordinatorDelegate?.openMovieDetails(for: id)
     }
