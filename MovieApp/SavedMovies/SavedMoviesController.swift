@@ -37,14 +37,14 @@ class SavedMoviesController: UIViewController,
     }()
     
     
-    private let viewModel: SavedMoviesViewModel
+    private let viewModel: SavedMoviesViewModelProtocol
     
     weak var coordinatorDelegate: AppCoordinatorDelegate?
     
-    init(_ viewModel: SavedMoviesViewModel) {
+    init(_ viewModel: SavedMoviesViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        viewModel.delegate = self
+        viewModel.setDelegate(self)
         createViews()
     }
     

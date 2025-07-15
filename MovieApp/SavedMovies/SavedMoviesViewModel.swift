@@ -9,7 +9,14 @@ protocol SavedMoviesViewModelDelegate: AnyObject {
     func reloadData()
 }
 
-class SavedMoviesViewModel {
+protocol SavedMoviesViewModelProtocol {
+    func setDelegate(_ delegate: SavedMoviesViewModelDelegate)
+    func getBookMarkedMovies()
+    func getNumberOfItems() -> Int
+    func getTrendingMovie(at index: Int) -> MovieDetailResponse
+}
+
+class SavedMoviesViewModel: SavedMoviesViewModelProtocol {
     
     let bookMarkService: BookmarkDataServiceProtocol
     let movieDetailsAPIService: APIServiceProtocol
@@ -22,6 +29,10 @@ class SavedMoviesViewModel {
         self.bookMarkService = bookMarkService
         self.movieDetailsAPIService = movieDetailsApiService
         getBookMarkedMovies()
+    }
+    
+    func setDelegate(_ delegate: any SavedMoviesViewModelDelegate) {
+        self.delegate = delegate
     }
     
     private func getAllBookMarkedIds(completion: @escaping () -> Void) {
@@ -53,7 +64,7 @@ class SavedMoviesViewModel {
     
     func getNumberOfItems() -> Int { bookMarkedMovies.count }
     
-    func getTrendingMovie(at index: Int) ->MovieDetailResponse {
+    func getTrendingMovie(at index: Int) -> MovieDetailResponse {
         bookMarkedMovies[index]
     }
 }
