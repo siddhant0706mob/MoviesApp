@@ -17,6 +17,9 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
     private var rootNavigationController: UINavigationController?
     private var splashVC: SplashViewController?
     private var tabController = UITabBarController()
+    private var homeViewController: HomeViewController?
+    private var savedMoviesController: SavedMoviesController?
+    private var searchViewController: SearchViewController?
     
     init(window: UIWindow) {
         self.window = window
@@ -24,6 +27,7 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
     }
     
     func start() {
+        setupControllers()
         showSplash()
         //Adding delay since configuration api is too fast and splash is not visible
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
@@ -51,26 +55,32 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
         }
     }
     
-    private func setupTabBarController(_ homeViewController: UIViewController,_ savedMoviesController: UIViewController) {
+    private func setupTabBarController(_ homeViewController: UIViewController?,_ savedMoviesController: UIViewController?) {
         let iconInset: CGFloat = 5.0
         let homeTabBarItem = UITabBarItem(title: "Home",
                                           image: UIImage(systemName: "house"),
                                           selectedImage: UIImage(systemName: "house.fill"))
         homeTabBarItem.imageInsets = UIEdgeInsets(top: iconInset, left: 0, bottom: -iconInset, right: 0)
-        homeViewController.tabBarItem = homeTabBarItem
+        homeViewController?.tabBarItem = homeTabBarItem
         
         let savedTabBarItem = UITabBarItem(title: "Saved",
                                            image: UIImage(systemName: "bookmark"),
                                            selectedImage: UIImage(systemName: "bookmark.fill"))
         savedTabBarItem.imageInsets = UIEdgeInsets(top: iconInset, left: 0, bottom: -iconInset, right: 0)
-        savedMoviesController.tabBarItem = savedTabBarItem
+        savedMoviesController?.tabBarItem = savedTabBarItem
+        
+        let searchTabBarItem = UITabBarItem(title: "Search",
+                                            image: UIImage(systemName: "magnifyingglass"),
+                                            selectedImage: UIImage(systemName: "magnifyingglass.fill"))
+        searchTabBarItem.imageInsets = UIEdgeInsets(top: iconInset, left: 0, bottom: -iconInset, right: 0)
+        searchViewController?.tabBarItem = searchTabBarItem
         
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .darkGray
+        appearance.backgroundColor = .white
         
-        appearance.stackedLayoutAppearance.normal.iconColor = .white
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.stackedLayoutAppearance.normal.iconColor = .gray
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.gray]
         appearance.stackedLayoutAppearance.selected.iconColor = .black
         appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.black]
         
@@ -79,23 +89,31 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
         tabController.delegate = self
     }
     
-    private func startHomeFeedFlow() {
+    private func setupControllers() {
         let homeViewModel = HomeViewModel()
-        let homeViewController = HomeViewController(homeViewModel)
-        homeViewController.coordinatorDelegate = self
+        homeViewController = HomeViewController(homeViewModel)
+        homeViewController?.coordinatorDelegate = self
         
         let viewModel = SavedMoviesViewModel()
-        let savedMoviesController = SavedMoviesController(viewModel)
-        savedMoviesController.coordinatorDelegate = self
+        savedMoviesController = SavedMoviesController(viewModel)
+        
+        searchViewController = SearchViewController()
         
         setupTabBarController(homeViewController, savedMoviesController)
-        
+    }
+    
+    private func startHomeFeedFlow() {
         splashVC?.dismissSplash { [weak self] in
-            guard let self else { return }
-            self.rootNavigationController?.popViewController(animated: false)
-            tabController.viewControllers = [homeViewController, savedMoviesController]
-            tabController.navigationItem.hidesBackButton = true
-            self.rootNavigationController?.pushViewController(tabController, animated: true)
+            guard let self,
+                  let homeViewController,
+                  let savedMoviesController,
+                  let searchViewController else { return }
+            let homeNav = UINavigationController(rootViewController: homeViewController)
+            let savedNav = UINavigationController(rootViewController: savedMoviesController)
+            let searchNav = UINavigationController(rootViewController: searchViewController)
+            tabController.viewControllers = [homeNav, savedNav, searchNav]
+            self.window.rootViewController = tabController
+            self.window.makeKeyAndVisible()
         }
     }
     
