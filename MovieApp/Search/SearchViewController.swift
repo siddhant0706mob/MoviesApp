@@ -8,6 +8,18 @@ class SearchViewController: UIViewController,
     private let viewModel: SearchViewModel
     private let titleLabel = UILabel()
     private let searchBar = UISearchBar()
+    private var lastSearchedString = ""
+    
+    private let emptyLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Oops! there are no results matching your search"
+        label.textColor = .systemGray
+        label.font = .systemFont(ofSize: 17, weight: .regular)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -53,11 +65,14 @@ class SearchViewController: UIViewController,
         searchBar.placeholder = "Search movies..."
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchBar)
+        view.addSubview(emptyLabel)
         
         NSLayoutConstraint.activate([
             searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
     }
     
@@ -70,7 +85,7 @@ class SearchViewController: UIViewController,
             collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 12),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
@@ -82,6 +97,7 @@ class SearchViewController: UIViewController,
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        lastSearchedString = searchText
         searchTimer?.invalidate()
         searchTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false, block: { [weak self] _ in
             self?.performSearch(query: searchText)
@@ -99,7 +115,20 @@ class SearchViewController: UIViewController,
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { viewModel.getNumberOfResults() }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        let count = viewModel.getNumberOfResults()
+        if count == .zero {
+            emptyLabel.isHidden = false
+            if !lastSearchedString.isEmpty {
+                emptyLabel.text = "Oops! there are no results matching your search"
+            } else {
+                emptyLabel.text = "Search for your favourite movies!!"
+            }
+            return count
+        }
+        emptyLabel.isHidden = true
+        return count
+    }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

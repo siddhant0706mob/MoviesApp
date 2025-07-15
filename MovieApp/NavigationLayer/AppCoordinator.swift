@@ -96,6 +96,7 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
         
         let viewModel = SavedMoviesViewModel()
         savedMoviesController = SavedMoviesController(viewModel)
+        savedMoviesController?.coordinatorDelegate = self
         
         let searchViewModel = SearchViewModel()
         searchViewController = SearchViewController(searchViewModel)
@@ -129,6 +130,12 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
     
     func openMovieDetails(for movieId: Int) {
         let vc = MovieDetailsViewController(movieId: movieId)
-        rootNavigationController?.pushViewController(vc, animated: true)
+        if let selectedNavController = tabController.selectedViewController as? UINavigationController {
+            selectedNavController.pushViewController(vc, animated: true)
+            vc.hidesBottomBarWhenPushed = true
+        } else {
+            let navController = UINavigationController(rootViewController: vc)
+            window.rootViewController?.present(navController, animated: true)
+        }
     }
 }
