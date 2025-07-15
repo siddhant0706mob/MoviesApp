@@ -27,5 +27,5 @@ class NetworkMonitor: NetworkAvailabilityProvider {
         monitor.start(queue: queue)
     }
     
-    func isNetworkAvailable() -> Bool { true }
+    func isNetworkAvailable() -> Bool { isConnected }
 }
