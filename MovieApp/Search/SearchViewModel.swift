@@ -9,8 +9,14 @@ protocol SearchViewModelDelegate: AnyObject {
     func didFetchSearchResults(_ searchResults: [Movie])
 }
 
-class SearchViewModel {
-    
+protocol SearchViewModelProtocol {
+    func fetchSearchResultsFor(_ query: String)
+    func getResult(at index: Int) -> Movie
+    func getNumberOfResults() -> Int
+    func setDelegate(_ delegate: SearchViewModelDelegate)
+}
+
+class SearchViewModel: SearchViewModelProtocol {
     private let searchAPIService: APIServiceProtocol
     
     private var movies = [Movie]()
@@ -19,6 +25,10 @@ class SearchViewModel {
     
     init(searchAPIService: APIServiceProtocol = APIServiceFactory.getApiService(for: .search)) {
         self.searchAPIService = searchAPIService
+    }
+    
+    func setDelegate(_ delegate: any SearchViewModelDelegate) {
+        self.delegate = delegate
     }
     
     func fetchSearchResultsFor(_ query: String) {
@@ -31,5 +41,4 @@ class SearchViewModel {
     func getResult(at index: Int) -> Movie { movies[index] }
     
     func getNumberOfResults() -> Int { movies.count }
-    
 }

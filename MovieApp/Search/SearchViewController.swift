@@ -5,7 +5,7 @@ class SearchViewController: UIViewController,
                             UICollectionViewDelegateFlowLayout,
                             UISearchBarDelegate,
                             SearchViewModelDelegate {
-    private let viewModel: SearchViewModel
+    private let viewModel: SearchViewModelProtocol
     private let titleLabel = UILabel()
     private let searchBar = UISearchBar()
     private var lastSearchedString = ""
@@ -38,10 +38,10 @@ class SearchViewController: UIViewController,
     private var movies = [Movie]()
     private var searchTimer: Timer?
     
-    init(_ viewModel: SearchViewModel = SearchViewModel()) {
+    init(_ viewModel: SearchViewModelProtocol = SearchViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        self.viewModel.delegate = self
+        self.viewModel.setDelegate(self)
         setupUI()
         setupCollectionView()
         configureTabBarItem()
