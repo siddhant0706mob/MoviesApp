@@ -14,10 +14,10 @@ struct ConfigurationStore {
 }
 
 class ConfigAPIService: ConfigApiServiceProtocol {
-    private let networkManager: NetworkServiceProtocol
+    private let networkManager: DataProviderService
     
     init() {
-        networkManager = NetworkServiceFactory.getNetworkService()
+        networkManager = DataProviderFactory.getDataProvider()
     }
     
     func fetchAndStoreConfig(_ completion: ((Result<Void, any Error>) -> Void)?) {

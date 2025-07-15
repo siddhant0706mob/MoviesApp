@@ -3,4 +3,114 @@
    uuid = "75945C69-BA54-4B17-97F1-778E8F3AC944"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FC00286F-D9CF-410D-8FE3-07F38E8FABA8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MovieApp/DataProviderLayer/DataProviderLayer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "28"
+            endingLineNumber = "28"
+            landmarkName = "request(endpoint:responseType:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F25A8C83-5780-4604-AA79-C33BC762BDC5"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MovieApp/DataProviderLayer/DataProviderLayer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "request(endpoint:responseType:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F25A8C83-5780-4604-AA79-C33BC762BDC5 - 97493d92c51e5428"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Optional&lt;Swift.String&gt;) -&gt; () in MovieApp.DataProviderLayer.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable, &#x3c4;_0_0: Swift.Encodable&gt;(endpoint: MovieApp.Endpoint, responseType: &#x3c4;_0_0.Type, completion: (Swift.Result&lt;&#x3c4;_0_0, MovieApp.APIError&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "MovieApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/siddhant-ranjan/Desktop/MovieApp/MoviesApp/MovieApp/DataProviderLayer/DataProviderLayer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "45"
+                  endingLineNumber = "45">
+               </Location>
+               <Location
+                  uuid = "F25A8C83-5780-4604-AA79-C33BC762BDC5 - 97493d92c51e5428"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Optional&lt;Swift.String&gt;) -&gt; () in MovieApp.DataProviderLayer.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable, &#x3c4;_0_0: Swift.Encodable&gt;(endpoint: MovieApp.Endpoint, responseType: &#x3c4;_0_0.Type, completion: (Swift.Result&lt;&#x3c4;_0_0, MovieApp.APIError&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "MovieApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/siddhant-ranjan/Desktop/MovieApp/MoviesApp/MovieApp/DataProviderLayer/DataProviderLayer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "45"
+                  endingLineNumber = "45">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "64C32BD1-CBEB-47A8-81EA-762692A4EFB2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MovieApp/LocalDataLayer/CachingService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "saveResponse(for:data:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "64C32BD1-CBEB-47A8-81EA-762692A4EFB2 - 83f55a90ffed5a96"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MovieApp.CachingService.saveResponse(for: Swift.String, data: Swift.String) -&gt; ()"
+                  moduleName = "MovieApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/siddhant-ranjan/Desktop/MovieApp/MoviesApp/MovieApp/LocalDataLayer/CachingService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26">
+               </Location>
+               <Location
+                  uuid = "64C32BD1-CBEB-47A8-81EA-762692A4EFB2 - b513b9c1eb171054"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in MovieApp.CachingService.saveResponse(for: Swift.String, data: Swift.String) -&gt; ()"
+                  moduleName = "MovieApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/siddhant-ranjan/Desktop/MovieApp/MoviesApp/MovieApp/LocalDataLayer/CachingService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

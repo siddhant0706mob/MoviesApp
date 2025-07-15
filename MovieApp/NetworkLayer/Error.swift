@@ -16,6 +16,7 @@ enum APIError: Error, Equatable {
     case unauthorized
     case serverError(statusCode: Int, message: String?)
     case unknown(Error?)
+    case noInternetConnection
 
     static func == (lhs: APIError, rhs: APIError) -> Bool {
         switch (lhs, rhs) {
@@ -27,6 +28,7 @@ enum APIError: Error, Equatable {
         case (.decodingError(let lErr as NSError), .decodingError(let rErr as NSError)): return lErr.code == rErr.code && lErr.domain == rErr.domain
         case (.serverError(let ls, let lm), .serverError(let rs, let rm)): return ls == rs && lm == rm
         case (.unknown(let lErr as NSError), .unknown(let rErr as NSError)): return lErr.code == rErr.code && lErr.domain == rErr.domain
+        case (.noInternetConnection, .noInternetConnection): return true
         default: return false
         }
     }

@@ -4,7 +4,7 @@
 //
 //  Created by Siddhant Ranjan on 12/07/25.
 //
-struct ConfigurationResponse: Decodable {
+struct ConfigurationResponse: Codable {
     let changeKeys: [String]
     let images: Images
     
@@ -14,7 +14,7 @@ struct ConfigurationResponse: Decodable {
     }
 }
 
-struct Images: Decodable {
+struct Images: Codable {
     let baseURL: String
     let secureBaseURL: String
     let backdropSizes: [String]

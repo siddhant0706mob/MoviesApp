@@ -11,10 +11,10 @@ protocol MovieDetailsServiceProtocol: APIServiceProtocol {
 }
 
 class MovieDetailsService: MovieDetailsServiceProtocol {
-    private let networkManager: NetworkServiceProtocol
+    private let networkManager: DataProviderService
     
     init() {
-        networkManager = NetworkServiceFactory.getNetworkService()
+        networkManager = DataProviderFactory.getDataProvider()
     }
     
     func fetchMovieDetail(with movieId: Int, _ completion: @escaping ((MovieDetailResponse?) -> Void)) {

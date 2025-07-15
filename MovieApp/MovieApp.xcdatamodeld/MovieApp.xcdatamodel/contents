@@ -3,4 +3,9 @@
     <entity name="BookmarkEntity" representedClassName="BookmarkEntity" syncable="YES">
         <attribute name="bookmarkedID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
+    <entity name="CachedResponse" representedClassName="CachedResponse" syncable="YES">
+        <attribute name="addedOn" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="data" optional="YES" attributeType="String"/>
+        <attribute name="key" optional="YES" attributeType="String"/>
+    </entity>
 </model>

@@ -11,10 +11,10 @@ protocol HomeAPIServiceProtocol: APIServiceProtocol {
 }
 
 class HomeAPIService: HomeAPIServiceProtocol {
-    private let networkManager: NetworkServiceProtocol
+    private let networkManager: DataProviderService
     
     init() {
-        networkManager = NetworkServiceFactory.getNetworkService()
+        networkManager = DataProviderFactory.getDataProvider()
     }
     
     func fetchTrendingMovies(_ completion: @escaping (MovieResponse) -> Void) {

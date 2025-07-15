@@ -10,9 +10,9 @@ protocol SearchAPIServiceProtocol: APIServiceProtocol {
 }
 
 class SearchAPIService: SearchAPIServiceProtocol {
-    private let networkService: NetworkServiceProtocol
+    private let networkService: DataProviderService
     
-    init(networkService: NetworkServiceProtocol = NetworkServiceFactory.getNetworkService()) {
+    init(networkService: DataProviderService = DataProviderFactory.getDataProvider()) {
         self.networkService = networkService
     }
     
