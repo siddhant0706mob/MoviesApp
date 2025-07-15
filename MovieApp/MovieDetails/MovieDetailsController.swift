@@ -11,7 +11,6 @@ class MovieDetailsViewController: UIViewController, MovieDetailsViewModelDelegat
     private let posterImageView = CachedImageView()
     private let bookMarkDataService: BookmarkDataServiceProtocol
     private let movieId: Int
-    private var isMovieBookMarked: Bool { bookMarkDataService.isBookmarked(movieId) }
     
     private let viewModel: MovieDetailsViewModel
     
@@ -78,6 +77,12 @@ class MovieDetailsViewController: UIViewController, MovieDetailsViewModelDelegat
             stackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -24)
         ])
     }
+    
+    private func isMovieBookmarked(completion: @escaping (Bool) -> Void) {
+        bookMarkDataService.isBookmarked(movieId, completion: { isBookMarked in
+            completion(isBookMarked)
+        })
+    }
 
     private func updateBookMarkButton(_ isAdded: Bool) {
         let btn = navigationItem.rightBarButtonItem
@@ -89,12 +94,24 @@ class MovieDetailsViewController: UIViewController, MovieDetailsViewModelDelegat
         let bookmarkButton = UIBarButtonItem(image: bookmarkImage, style: .plain, target: self, action: #selector(bookmarkTapped))
         bookmarkButton.tintColor = .systemBlue
         navigationItem.rightBarButtonItem = bookmarkButton
-        updateBookMarkButton(isMovieBookMarked)
+        isMovieBookmarked(completion: { [weak self] isBookmarked in
+            self?.updateBookMarkButton(isBookmarked)
+        })
     }
 
     @objc private func bookmarkTapped() {
-        isMovieBookMarked ? bookMarkDataService.deleteBookmark(movieId) : bookMarkDataService.addBookmark(movieId)
-        updateBookMarkButton(isMovieBookMarked)
+        isMovieBookmarked(completion: { [weak self] isBookMarked in
+            guard let self else { return }
+            if isBookMarked {
+                bookMarkDataService.deleteBookmark(self.movieId, completion: { [weak self] in
+                    self?.updateBookMarkButton(false)
+                })
+            } else {
+                bookMarkDataService.addBookmark(self.movieId, completion: { [weak self] in
+                    self?.updateBookMarkButton(true)
+                })
+            }
+        })
     }
 
     private func createLabel(_ text: String, font: UIFont, color: UIColor = .label, alignment: NSTextAlignment = .left, lines: Int = 0) -> UILabel {
@@ -160,9 +177,7 @@ class MovieDetailsViewController: UIViewController, MovieDetailsViewModelDelegat
         ]
         stackView.addArrangedSubview(buildInfoStack(financials))
         stackView.setCustomSpacing(20, after: stackView.arrangedSubviews.last!)
-        
         stackView.addArrangedSubview(createLabel("Rating: \(data.rating)", font: .systemFont(ofSize: 20, weight: .semibold)))
-        
         posterImageView.setImage(CommonUtils.getImageURLFromPath(path: data.imageURL) ?? "")
     }
 }

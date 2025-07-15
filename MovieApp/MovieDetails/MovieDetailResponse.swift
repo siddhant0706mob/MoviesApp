@@ -7,7 +7,10 @@
 
 import Foundation
 
-struct MovieDetailResponse: Codable {
+struct MovieDetailResponse: Codable, Hashable {
+
+    static func == (lhs: MovieDetailResponse, rhs: MovieDetailResponse) -> Bool { lhs.id == rhs.id }
+    
     let adult: Bool?
     let backdropPath: String?
     let belongsToCollection: BelongsToCollection?
@@ -57,7 +60,7 @@ struct MovieDetailResponse: Codable {
     }
 }
 
-struct BelongsToCollection: Codable {
+struct BelongsToCollection: Codable, Hashable {
     let id: Int?
     let name: String?
     let posterPath: String?
@@ -70,12 +73,12 @@ struct BelongsToCollection: Codable {
     }
 }
 
-struct Genre: Codable {
+struct Genre: Codable, Hashable {
     let id: Int?
     let name: String?
 }
 
-struct ProductionCompany: Codable {
+struct ProductionCompany: Codable, Hashable {
     let id: Int?
     let logoPath: String?
     let name: String?
@@ -89,7 +92,7 @@ struct ProductionCompany: Codable {
     }
 }
 
-struct ProductionCountry: Codable {
+struct ProductionCountry: Codable, Hashable {
     let iso3166_1: String?
     let name: String?
 
@@ -99,7 +102,7 @@ struct ProductionCountry: Codable {
     }
 }
 
-struct SpokenLanguage: Codable {
+struct SpokenLanguage: Codable, Hashable {
     let englishName: String?
     let iso639_1: String?
     let name: String?

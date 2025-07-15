@@ -208,14 +208,15 @@ class HomeViewController: UIViewController,
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let id = viewModel.getMovieID(at: indexPath.row)
-        openMovieDetail(for: id)
+//        openMovieDetail(for: id)
+        coordinatorDelegate?.openSavedMoviesPage()
     }
     
     func didSelectMovie(_ id: Int) {
         openMovieDetail(for: id)
     }
 
-    internal func openMovieDetail(for id: Int) {
+    func openMovieDetail(for id: Int) {
         coordinatorDelegate?.openMovieDetails(for: id)
     }
 }

@@ -9,13 +9,15 @@ import UIKit
 
 protocol AppCoordinatorDelegate: AnyObject {
     func openMovieDetails(for movieId: Int)
+    func openSavedMoviesPage()
 }
 
-class AppCoordinator: AppCoordinatorDelegate {
+class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelegate {
     private let window: UIWindow
     private let configApiService: APIServiceProtocol
     private var rootNavigationController: UINavigationController?
     private var splashVC: SplashViewController?
+    private var tabController = UITabBarController()
     
     init(window: UIWindow) {
         self.window = window
@@ -25,9 +27,9 @@ class AppCoordinator: AppCoordinatorDelegate {
     func start() {
         showSplash()
         //Adding delay since configuration api is too fast and splash is not visible
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            fetchConfiguration()
-//        }
+        //        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+        fetchConfiguration()
+        //        }
     }
     
     private func showSplash() {
@@ -54,15 +56,65 @@ class AppCoordinator: AppCoordinatorDelegate {
         let homeViewModel = HomeViewModel()
         let homeViewController = HomeViewController(homeViewModel)
         homeViewController.coordinatorDelegate = self
+        homeViewController.tabBarItem = UITabBarItem(title: "Home",
+                                                     image: UIImage(systemName: "house"),
+                                                     selectedImage: UIImage(systemName: "house.fill"))
+        let viewModel = SavedMoviesViewModel()
+        let savedMoviesController = SavedMoviesController(viewModel)
+        savedMoviesController.coordinatorDelegate = self
+        savedMoviesController.tabBarItem = UITabBarItem(title: "Saved",
+                                                        image: UIImage(systemName: "bookmark"),
+                                                        selectedImage: UIImage(systemName: "bookmark.fill"))
+        
+        let iconInset: CGFloat = 5.0
+        
+        let homeTabBarItem = UITabBarItem(title: "Home",
+                                          image: UIImage(systemName: "house"),
+                                          selectedImage: UIImage(systemName: "house.fill"))
+        homeTabBarItem.imageInsets = UIEdgeInsets(top: iconInset, left: 0, bottom: -iconInset, right: 0)
+        homeViewController.tabBarItem = homeTabBarItem
+        
+        let savedTabBarItem = UITabBarItem(title: "Saved",
+                                           image: UIImage(systemName: "bookmark"),
+                                           selectedImage: UIImage(systemName: "bookmark.fill"))
+        savedTabBarItem.imageInsets = UIEdgeInsets(top: iconInset, left: 0, bottom: -iconInset, right: 0)
+        savedMoviesController.tabBarItem = savedTabBarItem
+        
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemBackground
+        
+        appearance.stackedLayoutAppearance.normal.iconColor = .gray
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.gray]
+        appearance.stackedLayoutAppearance.selected.iconColor = .black
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.black]
+        
+        tabController.tabBar.standardAppearance = appearance
+        tabController.tabBar.scrollEdgeAppearance = appearance
+        tabController.delegate = self
+        
         splashVC?.dismissSplash { [weak self] in
             guard let self else { return }
             self.rootNavigationController?.popViewController(animated: false)
-            self.rootNavigationController?.pushViewController(homeViewController, animated: true)
+            tabController.viewControllers = [homeViewController, savedMoviesController]
+            tabController.navigationItem.hidesBackButton = true
+            self.rootNavigationController?.pushViewController(tabController, animated: true)
+        }
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if viewController is SavedMoviesController {
+            tabController.navigationItem.hidesBackButton = true
+            tabController.navigationItem.title = "Saved Movies"
         }
     }
     
     func openMovieDetails(for movieId: Int) {
         let vc = MovieDetailsViewController(movieId: movieId)
         rootNavigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func openSavedMoviesPage() {
+        
     }
 }
