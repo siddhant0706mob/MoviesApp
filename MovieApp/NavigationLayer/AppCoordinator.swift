@@ -9,7 +9,6 @@ import UIKit
 
 protocol AppCoordinatorDelegate: AnyObject {
     func openMovieDetails(for movieId: Int)
-    func openSavedMoviesPage()
 }
 
 class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelegate {
@@ -27,9 +26,9 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
     func start() {
         showSplash()
         //Adding delay since configuration api is too fast and splash is not visible
-        //        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-        fetchConfiguration()
-        //        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            self?.fetchConfiguration()
+        }
     }
     
     private func showSplash() {
@@ -52,22 +51,8 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
         }
     }
     
-    private func startHomeFeedFlow() {
-        let homeViewModel = HomeViewModel()
-        let homeViewController = HomeViewController(homeViewModel)
-        homeViewController.coordinatorDelegate = self
-        homeViewController.tabBarItem = UITabBarItem(title: "Home",
-                                                     image: UIImage(systemName: "house"),
-                                                     selectedImage: UIImage(systemName: "house.fill"))
-        let viewModel = SavedMoviesViewModel()
-        let savedMoviesController = SavedMoviesController(viewModel)
-        savedMoviesController.coordinatorDelegate = self
-        savedMoviesController.tabBarItem = UITabBarItem(title: "Saved",
-                                                        image: UIImage(systemName: "bookmark"),
-                                                        selectedImage: UIImage(systemName: "bookmark.fill"))
-        
+    private func setupTabBarController(_ homeViewController: UIViewController,_ savedMoviesController: UIViewController) {
         let iconInset: CGFloat = 5.0
-        
         let homeTabBarItem = UITabBarItem(title: "Home",
                                           image: UIImage(systemName: "house"),
                                           selectedImage: UIImage(systemName: "house.fill"))
@@ -82,16 +67,28 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
         
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .systemBackground
+        appearance.backgroundColor = .darkGray
         
-        appearance.stackedLayoutAppearance.normal.iconColor = .gray
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.gray]
+        appearance.stackedLayoutAppearance.normal.iconColor = .white
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.stackedLayoutAppearance.selected.iconColor = .black
         appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.black]
         
         tabController.tabBar.standardAppearance = appearance
         tabController.tabBar.scrollEdgeAppearance = appearance
         tabController.delegate = self
+    }
+    
+    private func startHomeFeedFlow() {
+        let homeViewModel = HomeViewModel()
+        let homeViewController = HomeViewController(homeViewModel)
+        homeViewController.coordinatorDelegate = self
+        
+        let viewModel = SavedMoviesViewModel()
+        let savedMoviesController = SavedMoviesController(viewModel)
+        savedMoviesController.coordinatorDelegate = self
+        
+        setupTabBarController(homeViewController, savedMoviesController)
         
         splashVC?.dismissSplash { [weak self] in
             guard let self else { return }
@@ -103,18 +100,16 @@ class AppCoordinator: NSObject, AppCoordinatorDelegate, UITabBarControllerDelega
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if viewController is SavedMoviesController {
+        if tabBarController.selectedIndex == 1 {
             tabController.navigationItem.hidesBackButton = true
             tabController.navigationItem.title = "Saved Movies"
+        } else {
+            tabController.navigationItem.title  = ""
         }
     }
     
     func openMovieDetails(for movieId: Int) {
         let vc = MovieDetailsViewController(movieId: movieId)
         rootNavigationController?.pushViewController(vc, animated: true)
-    }
-    
-    func openSavedMoviesPage() {
-        
     }
 }
